@@ -30,6 +30,36 @@ int brightness = 250; // 1000 == 100%
 // End of area you need to change
 // ----------------------------
 
+// ----------------------------
+// Theme config
+// ----------------------------
+
+#define LIGHT_THEME 1
+//#define DARK_THEME 1
+
+#ifdef LIGHT_THEME
+#define BACKGROUND_COLOUR TFT_WHITE
+#define MAIN_TEXT_COLOUR TFT_BLACK
+#define DIVIDER_COLOUR TFT_BLACK
+#define POSTIVE_COLOUR TFT_DARKGREEN
+#define NEGATIVE_COLOUR TFT_RED
+#define USE_CONDITIONAL_ARROW 1
+#endif
+
+#ifdef DARK_THEME
+#define BACKGROUND_COLOUR TFT_BLACK
+#define MAIN_TEXT_COLOUR TFT_WHITE
+#define DIVIDER_COLOUR TFT_WHITE
+#define POSTIVE_COLOUR TFT_DARKGREEN
+#define NEGATIVE_COLOUR TFT_RED
+//#define USE_CONDITIONAL_ARROW 1 //not using arrow for dark
+#endif
+
+
+// ----------------------------
+// End of Theme config
+// ----------------------------
+
 TFT_eSPI tft = TFT_eSPI();
 
 void setup()
@@ -38,12 +68,12 @@ void setup()
   tft.init();
   tft.setRotation(3);
   tft.fillScreen(TFT_BLACK);
-  
+
   pinMode(D8, INPUT);
   pinMode(D3, INPUT);
   pinMode(D4, OUTPUT);
   analogWrite(D4, brightness);
-  
+
   TJpgDec.setJpgScale(1);
   TJpgDec.setSwapBytes(true);
   TJpgDec.setCallback(displayOutput);
@@ -73,19 +103,19 @@ void loop()
 
 void renderCryptoCard(Crypto crypto)
 {
-  tft.fillScreen(TFT_WHITE);
+  tft.fillScreen(BACKGROUND_COLOUR);
 
   TJpgDec.drawFsJpg(10, 10, "/" + crypto.apiName + ".jpg");
   tft.setFreeFont(ROBOTO_24);
-  
+
   if (crypto.symbol.length() > 3) {
     tft.drawString(crypto.symbol, 15, 100);
   } else {
     tft.drawString(crypto.symbol, 25, 100);
   }
-  
-  
-  tft.setTextColor(TFT_BLACK);
+
+
+  tft.setTextColor(MAIN_TEXT_COLOUR);
   tft.setFreeFont(ROBOTO_24);
   tft.drawString("$", 100, 24);
   tft.setFreeFont(FREE_SANS_18);
@@ -95,16 +125,22 @@ void renderCryptoCard(Crypto crypto)
   tft.drawString("1D: ", 100, 68);
   tft.setFreeFont(FREE_SANS_12);
   tft.drawString(formatPercentageChange(crypto.dayChange), 160, 70);
+
+#ifdef USE_CONDITIONAL_ARROW
   renderConditionalArrow(138, 70, crypto.dayChange);
+#endif
 
   tft.setFreeFont(ROBOTO_24);
-  tft.setTextColor(TFT_BLACK);
+  tft.setTextColor(MAIN_TEXT_COLOUR);
   tft.drawString("7D: ", 100, 103);
   tft.setFreeFont(FREE_SANS_12);
   tft.drawString(formatPercentageChange(crypto.weekChange), 160, 105);
+
+#ifdef USE_CONDITIONAL_ARROW
   renderConditionalArrow(138, 105, crypto.weekChange);
-  
-  tft.setTextColor(TFT_BLACK);
+#endif
+
+  tft.setTextColor(MAIN_TEXT_COLOUR);
   TJpgDec.setJpgScale(4);
   TJpgDec.drawFsJpg(14, 145, "/" + crypto.apiName + ".jpg");
   tft.setFreeFont(ROBOTO_24);
@@ -121,8 +157,8 @@ void renderCryptoCard(Crypto crypto)
   tft.drawString(crypto.price.eth, 78, 203);
   TJpgDec.setJpgScale(1);
 
-  tft.drawLine(5, 188, 235, 188, TFT_BLACK);
-  tft.drawLine(70, 145, 70, 230, TFT_BLACK);
+  tft.drawLine(5, 188, 235, 188, DIVIDER_COLOUR);
+  tft.drawLine(70, 145, 70, 230, DIVIDER_COLOUR);
 }
 
 void renderConditionalArrow(int x, int y, double percentageChange) {
@@ -208,13 +244,20 @@ String formatCurrency(double price)
 
 String formatPercentageChange(double change)
 {
+  String pctChange;
   if (change >= 0)
   {
-    tft.setTextColor(TFT_DARKGREEN);
+    tft.setTextColor(POSTIVE_COLOUR);
+#ifndef USE_CONDITIONAL_ARROW
+    pctChange = "+";
+#endif
   }
   else
   {
-    tft.setTextColor(TFT_RED);
+    tft.setTextColor(NEGATIVE_COLOUR);
+#ifndef USE_CONDITIONAL_ARROW
+    pctChange = "-";
+#endif
   }
 
   double absChange = change;
@@ -223,12 +266,12 @@ String formatPercentageChange(double change)
   {
     absChange = -change;
   }
-  
+
   if (absChange > 100) {
-    return String(absChange, 0) + "%";
+    return pctChange + String(absChange, 0) + "%";
   } else if (absChange >= 10) {
-    return String(absChange, 1) + "%";
+    return pctChange + String(absChange, 1) + "%";
   } else {
-    return String(absChange) + "%";
+    return pctChange + String(absChange) + "%";
   }
 }
