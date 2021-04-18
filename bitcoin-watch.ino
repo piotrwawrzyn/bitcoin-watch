@@ -24,11 +24,11 @@
 const char *ssid = "Your Wi-fi SSID (name)";
 const char *password = "Your Wi-fi password";
 unsigned long secondsForEachCrypto = 12;
-int brightness = 250; // 1000 == 100%
 
 // ----------------------------
-// End of area you need to change
+// End of configurations
 // ----------------------------
+
 
 // ----------------------------
 // Theme config
@@ -43,18 +43,17 @@ int brightness = 250; // 1000 == 100%
 #define DIVIDER_COLOUR TFT_BLACK
 #define POSTIVE_COLOUR TFT_DARKGREEN
 #define NEGATIVE_COLOUR TFT_RED
-#define USE_CONDITIONAL_ARROW 1
+#define BRIGHTNESS 250
 #endif
 
 #ifdef DARK_THEME
 #define BACKGROUND_COLOUR TFT_BLACK
 #define MAIN_TEXT_COLOUR TFT_WHITE
 #define DIVIDER_COLOUR TFT_WHITE
-#define POSTIVE_COLOUR TFT_DARKGREEN
+#define POSTIVE_COLOUR TFT_GREEN
 #define NEGATIVE_COLOUR TFT_RED
-//#define USE_CONDITIONAL_ARROW 1 //not using arrow for dark
+#define BRIGHTNESS 650
 #endif
-
 
 // ----------------------------
 // End of Theme config
@@ -72,7 +71,7 @@ void setup()
   pinMode(D8, INPUT);
   pinMode(D3, INPUT);
   pinMode(D4, OUTPUT);
-  analogWrite(D4, brightness);
+  analogWrite(D4, BRIGHTNESS);
 
   TJpgDec.setJpgScale(1);
   TJpgDec.setSwapBytes(true);
@@ -107,7 +106,8 @@ void renderCryptoCard(Crypto crypto)
 
   TJpgDec.drawFsJpg(10, 10, "/" + crypto.apiName + ".jpg");
   tft.setFreeFont(ROBOTO_24);
-
+  tft.setTextColor(MAIN_TEXT_COLOUR, BACKGROUND_COLOUR);
+  
   if (crypto.symbol.length() > 3) {
     tft.drawString(crypto.symbol, 15, 100);
   } else {
@@ -125,20 +125,14 @@ void renderCryptoCard(Crypto crypto)
   tft.drawString("1D: ", 100, 68);
   tft.setFreeFont(FREE_SANS_12);
   tft.drawString(formatPercentageChange(crypto.dayChange), 160, 70);
-
-#ifdef USE_CONDITIONAL_ARROW
   renderConditionalArrow(138, 70, crypto.dayChange);
-#endif
 
   tft.setFreeFont(ROBOTO_24);
   tft.setTextColor(MAIN_TEXT_COLOUR);
   tft.drawString("7D: ", 100, 103);
   tft.setFreeFont(FREE_SANS_12);
   tft.drawString(formatPercentageChange(crypto.weekChange), 160, 105);
-
-#ifdef USE_CONDITIONAL_ARROW
   renderConditionalArrow(138, 105, crypto.weekChange);
-#endif
 
   tft.setTextColor(MAIN_TEXT_COLOUR);
   TJpgDec.setJpgScale(4);
@@ -164,11 +158,23 @@ void renderCryptoCard(Crypto crypto)
 void renderConditionalArrow(int x, int y, double percentageChange) {
   if (percentageChange < 0)
   {
+    #ifdef LIGHT_THEME
     TJpgDec.drawFsJpg(x, y, "/arrow_down.jpg");
+    #endif
+    
+    #ifdef DARK_THEME
+    TJpgDec.drawFsJpg(x, y, "/arrow_down_dark.jpg");
+    #endif
   }
   else
   {
+    #ifdef LIGHT_THEME
     TJpgDec.drawFsJpg(x, y, "/arrow_up.jpg");
+    #endif
+    
+    #ifdef DARK_THEME
+    TJpgDec.drawFsJpg(x, y, "/arrow_up_dark.jpg");
+    #endif
   }
 }
 
@@ -244,20 +250,13 @@ String formatCurrency(double price)
 
 String formatPercentageChange(double change)
 {
-  String pctChange;
   if (change >= 0)
   {
     tft.setTextColor(POSTIVE_COLOUR);
-#ifndef USE_CONDITIONAL_ARROW
-    pctChange = "+";
-#endif
   }
   else
   {
     tft.setTextColor(NEGATIVE_COLOUR);
-#ifndef USE_CONDITIONAL_ARROW
-    pctChange = "-";
-#endif
   }
 
   double absChange = change;
@@ -268,10 +267,10 @@ String formatPercentageChange(double change)
   }
 
   if (absChange > 100) {
-    return pctChange + String(absChange, 0) + "%";
+    return String(absChange, 0) + "%";
   } else if (absChange >= 10) {
-    return pctChange + String(absChange, 1) + "%";
+    return String(absChange, 1) + "%";
   } else {
-    return pctChange + String(absChange) + "%";
+    return String(absChange) + "%";
   }
 }
