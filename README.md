@@ -13,6 +13,7 @@ I encourage anyone who's excited about crypto to go and build this project. It's
 3. [Instalation and usage](#instalation-and-usage)
    - [Uploading the project to your board (step by step)](#uploading-the-project-to-your-board-step-by-step)
    - [Adding another cryptocurrency of your choice (step by step)](#adding-another-cryptocurrency-of-your-choice-step-by-step)
+   - [Changing the theme to dark](#changing-the-theme-to-dark)
 4. [Problems? Happy to help](#problems-happy-to-help)
 5. [Credits](#credits)
 
@@ -21,7 +22,8 @@ I encourage anyone who's excited about crypto to go and build this project. It's
 - Monitor 10+ cryptocurrencies
 - Add any cryptocurrency that is supported by [CoinGecko](https://www.coingecko.com/en) (over 6000 different coins)
 - Pick image (logo) of your choice for every cryptocurrency
-- Tons of information for every coin: **USD price**, **BTC price**, **ETH price**, **24h change**, **7 days change** all fitted on a compact 1"x1" screen.
+- Tons of information for every coin: **USD price**, **BTC price**, **ETH price**, **24h change**, **7 days change** all fitted on a compact 1"x1" screen
+- Light theme and dark theme
 - Connect to your home Wi-Fi network
 
 ![Bitcoin watch preview 2](https://user-images.githubusercontent.com/42513971/115114455-cccc1a80-9f8f-11eb-808a-844e0c1587e6.jpg)
@@ -33,7 +35,7 @@ I encourage anyone who's excited about crypto to go and build this project. It's
 
 ## Instalation and usage
 
-So you have the [ESP8266 D1 Mini and D1 Mini TFT Shield](https://www.tindie.com/products/brianlough/d1-mini-tft-shield/) already? Great, installation is straightforward and should only take you about 10 minutes. No deeper technical knowledge required. Below I will guide you step by step how to upload the software on your board and then how to add your own customized cryptos as well!
+So you have the [ESP8266 D1 Mini and D1 Mini TFT Shield](https://www.tindie.com/products/brianlough/d1-mini-tft-shield/) already? Great, installation is straightforward and should only take you about 10 to 20 minutes. No deeper technical knowledge required. Below I will guide you step by step how to upload the software on your board and then how to add your own customized cryptos as well!
 
 ### Uploading the project to your board (step by step)
 
@@ -43,7 +45,7 @@ So you have the [ESP8266 D1 Mini and D1 Mini TFT Shield](https://www.tindie.com/
 
 ![Download project zip](https://user-images.githubusercontent.com/42513971/115114807-71029100-9f91-11eb-8991-8d7b9ff79264.png)
 
-3. Unzip it in your desired location on your computer (for example on desktop)
+3. Unzip it in your desired location on your computer (for example on the desktop)
 
 4. Follow [this little tutorial](https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/) to install ESP8266 Add-on in Arduino IDE
 
@@ -69,7 +71,7 @@ So you have the [ESP8266 D1 Mini and D1 Mini TFT Shield](https://www.tindie.com/
    - Open `bitcoin-watch.ino` file in Arduino IDE
    - Put your Wi-fi ssid and password in configurations section.
 
-   ![configurations](https://user-images.githubusercontent.com/42513971/115116378-74017f80-9f99-11eb-803f-e89a6802bf77.png)
+   ![configurations](https://user-images.githubusercontent.com/42513971/115146247-f18ac580-a055-11eb-9cea-91bc02491a16.png)
 
 9. Wire your ESP8266 D1 Mini board to your computer.
 
@@ -94,12 +96,12 @@ So you have the [ESP8266 D1 Mini and D1 Mini TFT Shield](https://www.tindie.com/
 
 ### Adding another cryptocurrency of your choice (step by step)
 
-You track any cryptocurrency that is supported by CoinGecko
+You can track any cryptocurrency that is supported by CoinGecko
 
 1. Get CoinGecko id of your cryptocurrency
 
    - Open [CoinGecko all coins list](https://api.coingecko.com/api/v3/coins/list?include_platform=false)
-   - Use search to look for your cryptocurrency ticker. For example if you are looking to add VeChain (VET) look for `"VET"` (include quotation mark)
+   - Use search to look for your cryptocurrency ticker. For example if you are looking to add VeChain (VET) look for `"VET"` (include quotation marks)
 
    ![Search for symbol](https://user-images.githubusercontent.com/42513971/115117474-00627100-9f9f-11eb-84e7-10f8c1c05d7a.png)
 
@@ -140,7 +142,17 @@ You track any cryptocurrency that is supported by CoinGecko
 
 5. Upload the project to your board
 
-   - Click "Upload" button in the top menu
+### Changing the theme to dark
+
+1. Open `bitcoin-watch.ino` file in ArduinoIDE
+
+2. Find the `Theme config` section inside the file
+
+3. Comment out `#define LIGHT_THEME 1` and uncomment `#define DARK_THEME 1`
+
+![Theme config](https://user-images.githubusercontent.com/42513971/115146368-8261a100-a056-11eb-9eab-1a3aa7d8be79.png)
+
+4. Upload the project to your board
 
 ## Problems? Happy to help
 
